@@ -54,7 +54,4 @@ class SeleniumBase:
         self.logger.info(msg)
 
     def process(self) -> None:
-        pass
-
-if __name__ == '__main__':
-    SeleniumBase().process()
+        raise ValueError
