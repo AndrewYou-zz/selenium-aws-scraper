@@ -6,6 +6,10 @@ class SeleniumBase:
     def __init__(self) -> None:
         self.logger = self.initialize_logger()
 
+    def __del__(self) -> None:
+        logging.shutdown()
+        self.log('Closed logger.')
+
     def initialize_logger(self) -> logging.Logger:
         loggingConfig.fileConfig('logging.conf')
         self.logger = logging.getLogger('root')
