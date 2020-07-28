@@ -1,16 +1,18 @@
-import pandas as pd
+import csv
+
 from selenium.webdriver.support.ui import WebDriverWait
 
 from base import SeleniumBase
-from class_types import Dict, VectorDict, VectorString, WebElements
+from class_types import Dict, List, VectorDict, VectorString, WebElements
 from selenium_utils import ElementHasCssSelector
 
 
 class Scraper(SeleniumBase):
-    def __init__(self, url: str, file_name: str) -> None:
+    def __init__(self, url: str, file_name: str, columns: List[str]) -> None:
         super().__init__()
         self.base_url = url
         self.file_name = file_name
+        self.columns = columns
 
     def go_to(self, url: str) -> None:
         self.log(f"Navigating to {url}.")
@@ -68,19 +70,22 @@ class Scraper(SeleniumBase):
         phone = self.wait_for_elements_by_css_selector('p[itemprop="telephone"]')
         assert len(phone) == 1
         phone = phone[0].get_attribute("textContent")
-        self.log(f"Fetched office data for {url}")
-        return {
+        record = {
             "address": address,
             "city": city,
             "state": state,
             "zipcode": zipcode,
             "phone": phone,
         }
+        self.log(f"Fetched office data for {url}: {record}")
+        return record
 
     def write_to_csv(self, data: VectorDict) -> None:
         self.log("Writing to csv.")
-        df = pd.DataFrame(data)
-        df.to_csv(self.file_name, index=False)
+        with open(self.file_name, "w") as file:
+            csvwriter = csv.DictWriter(file, fieldnames=self.columns)
+            csvwriter.writeheader()
+            csvwriter.writerows(data)
         self.log("Written to csv.")
 
     def process(self) -> None:
@@ -96,4 +101,6 @@ class Scraper(SeleniumBase):
 
 if __name__ == "__main__":
     url = "https://www.onemedical.com/"
-    Scraper(url, "one_medical_nyc.csv").process()
+    Scraper(
+        url, "one_medical_nyc.csv", ["address", "city", "state", "zipcode", "phone"]
+    ).process()
