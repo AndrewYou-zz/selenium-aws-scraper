@@ -1,10 +1,13 @@
-from typing import List
+import logging
+from typing import Dict, List
 
 import selenium
 from selenium import webdriver
-import logging
 
 WebDriver = webdriver
 WebElements = List[WebDriver.remote.webelement.WebElement]
 
 Logger = logging.Logger
+
+VectorString = List[str]
+VectorDict = List[Dict]
