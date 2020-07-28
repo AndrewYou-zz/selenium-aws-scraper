@@ -5,8 +5,8 @@ from class_types import WebDriver, Logger
 import os
 from selenium import webdriver
 
-class SeleniumBase:
 
+class SeleniumBase:
     def __init__(self) -> None:
         self.logger = self.initialize_logger()
         self.path = os.environ.get('CHROMEDRIVER_PATH')

@@ -4,6 +4,7 @@ from class_types import WebElements
 
 from selenium.webdriver.support.ui import WebDriverWait
 
+
 class Scraper(SeleniumBase):
     def __init__(self, url: str) -> None:
         super().__init__()
@@ -23,6 +24,7 @@ class Scraper(SeleniumBase):
         locations_url = elements[0].get_attribute('href')
         print(locations_url)
         self.log('Ending scraping process.')
+
 
 if __name__ == '__main__':
     url = 'https://www.onemedical.com/'
