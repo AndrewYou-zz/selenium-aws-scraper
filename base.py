@@ -6,6 +6,12 @@ from selenium import webdriver
 
 class SeleniumBase:
 
+    def __str__(self) -> str:
+        return f"Selenium base class using chromedriver at {self.path}"
+
+    def __repr__(self) -> str:
+        return f"{x.__class__.__name__}()"
+
     def __init__(self) -> None:
         self.logger = self.initialize_logger()
         self.path = os.environ.get('CHROMEDRIVER_PATH')
