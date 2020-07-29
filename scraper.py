@@ -1,37 +1,13 @@
-import csv
-
-from selenium.webdriver.support.ui import WebDriverWait
-
-from chrome_base import ChromedriverBase
-from class_types import Dict, List, VectorDict, VectorString, WebElements
-from selenium_utils import ElementHasCssSelector
+from class_types import Dict, List, VectorString
+from selenium_base import SeleniumBase
 
 
-class Scraper(ChromedriverBase):
+class Scraper(SeleniumBase):
     def __init__(self, url: str, file_name: str, columns: List[str]) -> None:
         super().__init__()
         self.base_url = url
         self.file_name = file_name
         self.columns = columns
-
-    def go_to(self, url: str) -> None:
-        self.log(f"navigate to", type=self.REQ, payload=url)
-        self.webdriver.get(url)
-        self.log(f"navigate to", type=self.RES, payload=url)
-
-    def wait_for_elements_by_css_selector(
-        self, css_selector: str, wait_time: int = 10
-    ) -> WebElements:
-        self.log(f"waiting for css selector", type=self.REQ, payload=css_selector)
-        elements = WebDriverWait(self.webdriver, wait_time).until(
-            ElementHasCssSelector(css_selector)
-        )
-        self.log(
-            f"waiting for css selector",
-            type=self.RES,
-            payload=f"{len(elements)} elements",
-        )
-        return elements
 
     def go_to_locations_page(self) -> None:
         elements = self.wait_for_elements_by_css_selector("a[href='/locations']")
@@ -88,14 +64,6 @@ class Scraper(ChromedriverBase):
         self.log(f"scrape office data", type=self.RES, payload=f"{record!r}")
         return record
 
-    def write_to_csv(self, data: VectorDict) -> None:
-        self.log("write to csv", type=self.REQ, payload=self.file_name)
-        with open(self.file_name, "w") as file:
-            csvwriter = csv.DictWriter(file, fieldnames=self.columns)
-            csvwriter.writeheader()
-            csvwriter.writerows(data)
-        self.log("write to csv", type=self.RES, payload=self.file_name)
-
     def process(self) -> None:
         self.log("scrape", type=self.REQ, payload="")
         self.go_to(self.base_url)
@@ -103,7 +71,7 @@ class Scraper(ChromedriverBase):
         self.go_to_nyc_page()
         urls = self.get_office_urls()
         data = [self.get_office_information(url) for url in urls]
-        self.write_to_csv(data)
+        self.write_to_csv(data, self.columns, self.file_name)
         self.log("scrape", type=self.RES, payload=f"{len(data)} records")
 
 

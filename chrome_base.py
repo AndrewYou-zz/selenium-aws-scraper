@@ -24,7 +24,7 @@ class ChromedriverBase:
         logging.shutdown()
 
     def __str__(self) -> str:
-        return f"Selenium base class using chromedriver at {self.path}"
+        return f"Chromedriver base class using chromedriver at {self.path}"
 
     def __repr__(self) -> str:
         return f"{x.__class__.__name__}()"
