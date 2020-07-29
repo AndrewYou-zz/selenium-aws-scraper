@@ -64,7 +64,7 @@ class ChromedriverBase(ABC):
         if headless:
             chrome_options.add_argument("--headless")
         self.webdriver = webdriver.Chrome(
-            executable_path=self.path, chrome_options=chrome_options
+            executable_path=self.path, options=chrome_options
         )
         self.log("initialize webdriver", type=self.RES, payload="")
         return self.webdriver
