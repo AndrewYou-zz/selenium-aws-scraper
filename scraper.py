@@ -18,6 +18,7 @@ class Scraper(SeleniumBase):
         return f"Scrapes from {self.base_url} and stores to {self.file_name}"
 
     def get_office_urls(self) -> VectorString:
+        """ Fetches all office urls on One Medical NYC page """
         self.log(f"scrape office urls", type=self.REQ, payload="")
         elements = self.wait_for_elements_by_css_selector("ul.office-list > li p~a")
         self.log(
@@ -26,6 +27,7 @@ class Scraper(SeleniumBase):
         return [a.get_attribute("href") for a in elements]
 
     def get_office_information(self, url: str) -> Dict:
+        """ Fetches office location data on One Medical office page """
         self.log(f"scrape office data", type=self.REQ, payload=url)
         record = dict()
         self.go_to(url)

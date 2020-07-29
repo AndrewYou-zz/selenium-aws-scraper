@@ -25,11 +25,13 @@ class SeleniumBase(ChromedriverBase):
         return f"Defines {num_methods} utility selenium methods"
 
     def go_to(self, url: str) -> None:
+        """ Navigates to url """
         self.log(f"go to", type=self.REQ, payload=url)
         self.webdriver.get(url)
         self.log(f"go to", type=self.RES, payload=url)
 
     def go_to_by_href(self, a_tag_selector: str) -> None:
+        """ Navigates to url specified by a particular a_tag's href"""
         elements = self.wait_for_elements_by_css_selector(a_tag_selector)
         assert len(elements) == 1
         href = elements[0].get_attribute("href")
@@ -38,6 +40,7 @@ class SeleniumBase(ChromedriverBase):
     def wait_for_elements_by_css_selector(
         self, css_selector: str, wait_time: int = 10
     ) -> WebElements:
+        """ Waits for a specified DOM element to appear """
         self.log(f"waiting for css selector", type=self.REQ, payload=css_selector)
         elements = WebDriverWait(self.webdriver, wait_time).until(
             ElementHasCssSelector(css_selector)
@@ -52,6 +55,7 @@ class SeleniumBase(ChromedriverBase):
     def write_to_csv(
         self, data: VectorDict, columns: List[str], file_name: str
     ) -> None:
+        """ Writes data to csv """
         self.log("write to csv", type=self.REQ, payload=file_name)
         with open(self.file_name, "w") as file:
             csvwriter = csv.DictWriter(file, fieldnames=columns)
