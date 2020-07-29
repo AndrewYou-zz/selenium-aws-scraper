@@ -22,7 +22,7 @@ class SeleniumBase(ChromedriverBase):
                 and name[-2:] != "__"
             ]
         )
-        return f"Defines {num_methods} utility selenium methods"
+        return f"Defines {num_methods-1} utility selenium methods"
 
     def go_to(self, url: str) -> None:
         """ Navigates to url """
