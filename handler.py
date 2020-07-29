@@ -5,10 +5,7 @@ from scraper import Scraper
 def handler(event: Dict, context: Dict) -> None:
     url = "https://www.onemedical.com/"
     x = Scraper(
-        url,
-        "one_medical_nyc.csv",
-        ["address", "city", "state", "zipcode", "phone"],
-        True,
+        url, "one_medical_nyc.csv", ["address", "city", "state", "zipcode", "phone"]
     ).process()
 
 
