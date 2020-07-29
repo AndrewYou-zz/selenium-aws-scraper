@@ -3,6 +3,7 @@ import logging.config as loggingConfig
 import os
 
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
 from class_types import Logger, WebDriver
 
@@ -11,10 +12,10 @@ class ChromedriverBase:
     RES = "Response"
     REQ = "Request"
 
-    def __init__(self) -> None:
+    def __init__(self, headless: bool) -> None:
         self.logger = self.initialize_logger()
         self.path = ChromedriverBase.fetch_chromedriver_path()
-        self.webdriver = self.initialize_webdriver()
+        self.webdriver = self.initialize_webdriver(headless)
 
     def __del__(self) -> None:
         self.log("close webdriver", type=self.REQ, payload="")
@@ -51,9 +52,14 @@ class ChromedriverBase:
         self.__path = ""
         self.log("reset chromedriver path", type=self.RES, payload="")
 
-    def initialize_webdriver(self) -> WebDriver:
-        self.log("initialize webdriver", type=self.REQ, payload="")
-        self.webdriver = webdriver.Chrome(executable_path=self.path)
+    def initialize_webdriver(self, headless: bool) -> WebDriver:
+        self.log("initialize webdriver", type=self.REQ, payload=f"{headless!r}")
+        chrome_options = Options()
+        if headless:
+            chrome_options.add_argument("--headless")
+        self.webdriver = webdriver.Chrome(
+            executable_path=self.path, chrome_options=chrome_options
+        )
         self.log("initialize webdriver", type=self.RES, payload="")
         return self.webdriver
 

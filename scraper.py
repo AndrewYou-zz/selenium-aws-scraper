@@ -3,8 +3,10 @@ from selenium_base import SeleniumBase
 
 
 class Scraper(SeleniumBase):
-    def __init__(self, url: str, file_name: str, columns: List[str]) -> None:
-        super().__init__()
+    def __init__(
+        self, url: str, file_name: str, columns: List[str], headless: bool = False
+    ) -> None:
+        super().__init__(headless)
         self.base_url = url
         self.file_name = file_name
         self.columns = columns
@@ -65,8 +67,8 @@ class Scraper(SeleniumBase):
 if __name__ == "__main__":
     url = "https://www.onemedical.com/"
     x = Scraper(
-        url, "one_medical_nyc.csv", ["address", "city", "state", "zipcode", "phone"]
-    )
-    import pdb
-
-    pdb.set_trace()
+        url,
+        "one_medical_nyc.csv",
+        ["address", "city", "state", "zipcode", "phone"],
+        True,
+    ).process()
