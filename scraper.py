@@ -64,13 +64,3 @@ class Scraper(SeleniumBase):
         data = [self.get_office_information(url) for url in urls]
         self.write_to_csv(data, self.columns, self.file_name)
         self.log("scrape", type=self.RES, payload=f"{len(data)} records")
-
-
-if __name__ == "__main__":
-    url = "https://www.onemedical.com/"
-    x = Scraper(
-        url,
-        "one_medical_nyc.csv",
-        ["address", "city", "state", "zipcode", "phone"],
-        True,
-    ).process()
