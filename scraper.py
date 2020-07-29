@@ -9,18 +9,6 @@ class Scraper(SeleniumBase):
         self.file_name = file_name
         self.columns = columns
 
-    def go_to_locations_page(self) -> None:
-        elements = self.wait_for_elements_by_css_selector("a[href='/locations']")
-        assert len(elements) == 1
-        locations_url = elements[0].get_attribute("href")
-        self.go_to(locations_url)
-
-    def go_to_nyc_page(self) -> None:
-        elements = self.wait_for_elements_by_css_selector("a[href='/locations/nyc']")
-        assert len(elements) == 1
-        nyc_url = elements[0].get_attribute("href")
-        self.go_to(nyc_url)
-
     def get_office_urls(self) -> VectorString:
         self.log(f"scrape office urls", type=self.REQ, payload="")
         elements = self.wait_for_elements_by_css_selector("ul.office-list > li p~a")
@@ -67,8 +55,8 @@ class Scraper(SeleniumBase):
     def process(self) -> None:
         self.log("scrape", type=self.REQ, payload="")
         self.go_to(self.base_url)
-        self.go_to_locations_page()
-        self.go_to_nyc_page()
+        self.go_to_by_href("a[href='/locations']")
+        self.go_to_by_href("a[href='/locations/nyc']")
         urls = self.get_office_urls()
         data = [self.get_office_information(url) for url in urls]
         self.write_to_csv(data, self.columns, self.file_name)

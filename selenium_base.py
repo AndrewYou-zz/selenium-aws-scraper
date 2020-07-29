@@ -12,9 +12,15 @@ class SeleniumBase(ChromedriverBase):
         super().__init__()
 
     def go_to(self, url: str) -> None:
-        self.log(f"navigate to", type=self.REQ, payload=url)
+        self.log(f"go to", type=self.REQ, payload=url)
         self.webdriver.get(url)
-        self.log(f"navigate to", type=self.RES, payload=url)
+        self.log(f"go to", type=self.RES, payload=url)
+
+    def go_to_by_href(self, a_tag_selector: str) -> None:
+        elements = self.wait_for_elements_by_css_selector(a_tag_selector)
+        assert len(elements) == 1
+        href = elements[0].get_attribute("href")
+        self.go_to(href)
 
     def wait_for_elements_by_css_selector(
         self, css_selector: str, wait_time: int = 10
