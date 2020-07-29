@@ -76,7 +76,7 @@ class ChromedriverBase(ABC):
 
     @staticmethod
     def fetch_logging_path():
-        return "logging.conf"
+        return "config/logging.conf"
 
     @staticmethod
     def fetch_chromedriver_path():
