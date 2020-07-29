@@ -13,7 +13,7 @@ class ChromedriverBase:
 
     def __init__(self) -> None:
         self.logger = self.initialize_logger()
-        self.path = os.environ.get("CHROMEDRIVER_PATH")
+        self.path = ChromedriverBase.fetch_chromedriver_path()
         self.webdriver = self.initialize_webdriver()
 
     def __del__(self) -> None:
@@ -69,3 +69,7 @@ class ChromedriverBase:
     @staticmethod
     def fetch_logging_path():
         return "logging.conf"
+
+    @staticmethod
+    def fetch_chromedriver_path():
+        return os.environ.get("CHROMEDRIVER_PATH")

@@ -19,36 +19,29 @@ class Scraper(SeleniumBase):
 
     def get_office_information(self, url: str) -> Dict:
         self.log(f"scrape office data", type=self.REQ, payload=url)
+        record = dict()
         self.go_to(url)
-        address = ", ".join(
-            [
-                item.get_attribute("textContent")
-                for item in self.wait_for_elements_by_css_selector(
-                    'p[itemprop="streetAddress"]'
+        selectors = [
+            'p[itemprop="streetAddress"]',
+            'span[itemprop="addressLocality"]',
+            'span[itemprop="addressRegion"]',
+            'span[itemprop="postalCode"]',
+            'p[itemprop="telephone"]',
+        ]
+        column_selector_map = dict(zip(self.columns, selectors))
+        for key, css_selector in column_selector_map.items():
+            if key == "address":
+                value = ", ".join(
+                    [
+                        item.get_attribute("textContent")
+                        for item in self.wait_for_elements_by_css_selector(css_selector)
+                    ]
                 )
-            ]
-        )
-        city = self.wait_for_elements_by_css_selector(
-            'span[itemprop="addressLocality"]'
-        )
-        assert len(city) == 1
-        city = city[0].get_attribute("textContent")
-        state = self.wait_for_elements_by_css_selector('span[itemprop="addressRegion"]')
-        assert len(state) == 1
-        state = state[0].get_attribute("textContent")
-        zipcode = self.wait_for_elements_by_css_selector('span[itemprop="postalCode"]')
-        assert len(zipcode) == 1
-        zipcode = zipcode[0].get_attribute("textContent")
-        phone = self.wait_for_elements_by_css_selector('p[itemprop="telephone"]')
-        assert len(phone) == 1
-        phone = phone[0].get_attribute("textContent")
-        record = {
-            "address": address,
-            "city": city,
-            "state": state,
-            "zipcode": zipcode,
-            "phone": phone,
-        }
+            else:
+                elements = self.wait_for_elements_by_css_selector(css_selector)
+                assert len(elements) == 1
+                value = elements[0].get_attribute("textContent")
+            record[key] = value
         self.log(f"scrape office data", type=self.RES, payload=f"{record!r}")
         return record
 
