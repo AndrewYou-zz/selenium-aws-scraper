@@ -18,16 +18,20 @@ class ChromedriverBase:
 
     def __del__(self) -> None:
         self.log("close webdriver", type=self.REQ, payload="")
-        self.webdriver.quit()
+        try:
+            self.webdriver.quit()
+        except ImportError as e:
+            if e == "sys.meta_path is None, Python is likely shutting down":
+                pass
         self.log("close webdriver", type=self.RES, payload="")
         self.log("close logger", type=self.REQ, payload="")
         logging.shutdown()
 
     def __str__(self) -> str:
-        return f"Chromedriver base class using chromedriver at {self.path}"
+        return f"Using chromedriver at {self.path}"
 
     def __repr__(self) -> str:
-        return f"{x.__class__.__name__}()"
+        return f"{self.__class__.__name__}()"
 
     @property
     def path(self) -> str:

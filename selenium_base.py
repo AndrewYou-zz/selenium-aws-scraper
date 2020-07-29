@@ -1,4 +1,5 @@
 import csv
+import types
 
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -8,8 +9,20 @@ from selenium_utils import ElementHasCssSelector
 
 
 class SeleniumBase(ChromedriverBase):
-    def __init__(self) -> None:
-        super().__init__()
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}()"
+
+    def __str__(self) -> str:
+        num_methods = len(
+            [
+                name
+                for name, item in SeleniumBase.__dict__.items()
+                if isinstance(item, types.FunctionType)
+                and name[:2] != "__"
+                and name[-2:] != "__"
+            ]
+        )
+        return f"Defines {num_methods} utility selenium methods"
 
     def go_to(self, url: str) -> None:
         self.log(f"go to", type=self.REQ, payload=url)

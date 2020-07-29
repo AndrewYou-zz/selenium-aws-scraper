@@ -9,6 +9,12 @@ class Scraper(SeleniumBase):
         self.file_name = file_name
         self.columns = columns
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}('{self.base_url}', '{self.file_name}', {self.columns!r})"
+
+    def __str__(self) -> str:
+        return f"Scrapes from {self.base_url} and stores to {self.file_name}"
+
     def get_office_urls(self) -> VectorString:
         self.log(f"scrape office urls", type=self.REQ, payload="")
         elements = self.wait_for_elements_by_css_selector("ul.office-list > li p~a")
@@ -58,6 +64,9 @@ class Scraper(SeleniumBase):
 
 if __name__ == "__main__":
     url = "https://www.onemedical.com/"
-    Scraper(
+    x = Scraper(
         url, "one_medical_nyc.csv", ["address", "city", "state", "zipcode", "phone"]
-    ).process()
+    )
+    import pdb
+
+    pdb.set_trace()
