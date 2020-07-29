@@ -15,18 +15,22 @@ class Scraper(SeleniumBase):
         self.columns = columns
 
     def go_to(self, url: str) -> None:
-        self.log(f"Navigating to {url}.")
+        self.log(f"navigate to", type=self.REQ, payload=url)
         self.webdriver.get(url)
-        self.log(f"Navigated to {url}.")
+        self.log(f"navigate to", type=self.RES, payload=url)
 
     def wait_for_elements_by_css_selector(
         self, css_selector: str, wait_time: int = 10
     ) -> WebElements:
-        self.log(f"Waiting for {css_selector!r}.")
+        self.log(f"waiting for css selector", type=self.REQ, payload=css_selector)
         elements = WebDriverWait(self.webdriver, wait_time).until(
             ElementHasCssSelector(css_selector)
         )
-        self.log(f"Found {len(elements)} {css_selector!r} element(s).")
+        self.log(
+            f"waiting for css selector",
+            type=self.RES,
+            payload=f"{len(elements)} elements",
+        )
         return elements
 
     def go_to_locations_page(self) -> None:
@@ -41,12 +45,16 @@ class Scraper(SeleniumBase):
         nyc_url = elements[0].get_attribute("href")
         self.go_to(nyc_url)
 
-    def fetch_office_urls(self) -> VectorString:
+    def get_office_urls(self) -> VectorString:
+        self.log(f"scrape office urls", type=self.REQ, payload="")
         elements = self.wait_for_elements_by_css_selector("ul.office-list > li p~a")
+        self.log(
+            f"scrape office urls", type=self.RES, payload=f"{len(elements)} office urls"
+        )
         return [a.get_attribute("href") for a in elements]
 
-    def fetch_office_information(self, url: str) -> Dict:
-        self.log(f"Fetching office data for {url}")
+    def get_office_information(self, url: str) -> Dict:
+        self.log(f"scrape office data", type=self.REQ, payload=url)
         self.go_to(url)
         address = ", ".join(
             [
@@ -77,26 +85,26 @@ class Scraper(SeleniumBase):
             "zipcode": zipcode,
             "phone": phone,
         }
-        self.log(f"Fetched office data for {url}: {record}")
+        self.log(f"scrape office data", type=self.RES, payload=f"{record!r}")
         return record
 
     def write_to_csv(self, data: VectorDict) -> None:
-        self.log("Writing to csv.")
+        self.log("write to csv", type=self.REQ, payload=self.file_name)
         with open(self.file_name, "w") as file:
             csvwriter = csv.DictWriter(file, fieldnames=self.columns)
             csvwriter.writeheader()
             csvwriter.writerows(data)
-        self.log("Written to csv.")
+        self.log("write to csv", type=self.RES, payload=self.file_name)
 
     def process(self) -> None:
-        self.log("Beginning scraping process.")
+        self.log("scrape", type=self.REQ, payload="")
         self.go_to(self.base_url)
         self.go_to_locations_page()
         self.go_to_nyc_page()
-        urls = self.fetch_office_urls()
-        data = [self.fetch_office_information(url) for url in urls]
+        urls = self.get_office_urls()
+        data = [self.get_office_information(url) for url in urls]
         self.write_to_csv(data)
-        self.log("Ending scraping process.")
+        self.log("scrape", type=self.RES, payload=f"{len(data)} records")
 
 
 if __name__ == "__main__":
