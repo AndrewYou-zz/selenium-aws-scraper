@@ -1,4 +1,4 @@
-# Implements an OOO approach to building selenium web scraper.
+# Implements an OOO approach to effeciently build selenium web scrapers.
 
 # Features
   1. Leverages Python3.8 (e.g. function types and the newly introduced walrus `:=` operator).
