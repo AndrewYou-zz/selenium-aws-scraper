@@ -7,7 +7,7 @@ from selenium import webdriver
 from class_types import Logger, WebDriver
 
 
-class SeleniumBase:
+class ChromedriverBase:
     RES = "Response"
     REQ = "Request"
 
@@ -54,7 +54,7 @@ class SeleniumBase:
         return self.webdriver
 
     def initialize_logger(self) -> Logger:
-        logging_path = SeleniumBase.fetch_logging_path()
+        logging_path = ChromedriverBase.fetch_logging_path()
         loggingConfig.fileConfig(logging_path)
         self.logger = logging.getLogger("root")
         self.log("initialize logger", type=self.RES, payload="")
@@ -63,13 +63,9 @@ class SeleniumBase:
     def log(self, msg: str, **kwargs: str) -> None:
         self.logger.info(msg, extra=kwargs)
 
-    @staticmethod
-    def fetch_logging_path():
-        return "logging.conf"
-
     def process(self) -> None:
         raise ValueError
 
-
-if __name__ == "__main__":
-    SeleniumBase()
+    @staticmethod
+    def fetch_logging_path():
+        return "logging.conf"

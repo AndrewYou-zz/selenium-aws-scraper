@@ -2,12 +2,12 @@ import csv
 
 from selenium.webdriver.support.ui import WebDriverWait
 
-from base import SeleniumBase
+from chrome_base import ChromedriverBase
 from class_types import Dict, List, VectorDict, VectorString, WebElements
 from selenium_utils import ElementHasCssSelector
 
 
-class Scraper(SeleniumBase):
+class Scraper(ChromedriverBase):
     def __init__(self, url: str, file_name: str, columns: List[str]) -> None:
         super().__init__()
         self.base_url = url
