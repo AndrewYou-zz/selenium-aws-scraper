@@ -1,6 +1,7 @@
 import logging
 import logging.config as loggingConfig
 import os
+from abc import ABC, abstractmethod
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -8,7 +9,7 @@ from selenium.webdriver.chrome.options import Options
 from class_types import Logger, WebDriver
 
 
-class ChromedriverBase:
+class ChromedriverBase(ABC):
     RES = "Response"
     REQ = "Request"
 
@@ -73,9 +74,6 @@ class ChromedriverBase:
     def log(self, msg: str, **kwargs: str) -> None:
         self.logger.info(msg, extra=kwargs)
 
-    def process(self) -> None:
-        raise ValueError
-
     @staticmethod
     def fetch_logging_path():
         return "logging.conf"
@@ -83,3 +81,7 @@ class ChromedriverBase:
     @staticmethod
     def fetch_chromedriver_path():
         return os.environ.get("CHROMEDRIVER_PATH")
+
+    @abstractmethod
+    def process(self) -> None:
+        pass
